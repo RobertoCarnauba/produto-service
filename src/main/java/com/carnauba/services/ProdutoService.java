@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.carnauba.config.ProdutoSendMessage;
 import com.carnauba.data.vo.ProdutoVO;
 import com.carnauba.entity.Produto;
 import com.carnauba.exception.ResourceNotFoundException;
@@ -18,14 +19,18 @@ import lombok.var;
 public class ProdutoService {
 
 	private final ProdutoRepository produtoRepository;
+	private final ProdutoSendMessage produtoSendMessage;
 	
 	@Autowired
-	public ProdutoService (ProdutoRepository produtoRepository) {
+	public ProdutoService (ProdutoRepository produtoRepository, ProdutoSendMessage produtoSendMessage) {
 		this.produtoRepository = produtoRepository;
+		this.produtoSendMessage = produtoSendMessage;
 	}
 	//Create
 	public ProdutoVO create(ProdutoVO produtoVO) {
-		return ProdutoVO.create(produtoRepository.save(Produto.create(produtoVO)));
+		ProdutoVO prodVoRetorno = ProdutoVO.create(produtoRepository.save(Produto.create(produtoVO)));
+		produtoSendMessage.sendMessage(produtoVO);
+		return prodVoRetorno;
 	}
 	//FindAll
 	public Page<ProdutoVO> findAll(Pageable pageable){

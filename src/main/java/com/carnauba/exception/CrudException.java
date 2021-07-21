@@ -22,3 +22,4 @@ public class CrudException extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}
 }
+
